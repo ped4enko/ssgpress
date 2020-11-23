@@ -33,7 +33,3 @@ function ssgp_main_page_html(){
 function ssgp_options_page_html(){
     include 'admin/options.php';
 }
-
-register_activation_hook( __FILE__, 'ssgp_init_db' );
-register_uninstall_hook( __FILE__, 'ssgp_drop_options' );
-register_uninstall_hook( __FILE__, 'ssgp_drop_db' );

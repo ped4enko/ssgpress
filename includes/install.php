@@ -13,6 +13,7 @@ function ssgp_init_db(){
 		$ssgp_queries,
 		"CREATE TABLE {$wpdb->prefix}ssgp_queue (
 id mediumint(8) unsigned NOT NULL auto_increment ,
+run mediumint(8) unsigned NOT NULL,
 url varchar(1024) NOT NULL,
 PRIMARY KEY  (id)
 )
@@ -35,3 +36,4 @@ COLLATE {$wpdb->collate}"
 	}
 }
 
+register_activation_hook( WP_PLUGIN_DIR.'/ssgpress/ssgpress.php', 'ssgp_init_db' );

@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) )
             $('#ssgp_build_form').on('submit', function(e){
                 e.preventDefault();
                 var data = {
-                    'action': 'ssgp_build',
-                    'nonce': '<?php echo wp_create_nonce('ssgp_build'); ?>'
+                    'action': 'ssgp_build_start',
+                    'nonce': '<?php echo wp_create_nonce('ssgp_build_start'); ?>'
                 }
                 jQuery.post(ajaxurl, data, function(response){
                     alert(response);

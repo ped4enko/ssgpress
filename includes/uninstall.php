@@ -10,3 +10,7 @@ function ssgp_drop_db(){
 	$wpdb->query($sql);
 
 }
+
+
+register_uninstall_hook( __FILE__, 'ssgp_drop_options' );
+register_uninstall_hook( __FILE__, 'ssgp_drop_db' );
