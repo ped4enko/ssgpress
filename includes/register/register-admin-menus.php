@@ -6,7 +6,8 @@ function ssgp_register_admin_menus() {
 		'SSGpress',
 		'manage_options',
 		'ssgp',
-		'ssgp_main_page_html'
+		'ssgp_main_page_html',
+		'dashicons-media-archive'
 	);
 
 	$ssgp_menu_main_hook = add_submenu_page(
@@ -28,4 +29,4 @@ function ssgp_register_admin_menus() {
 	);
 }
 
-add_action('admin_menu', 'ssgp_register_admin_menus');
+add_action( 'admin_menu', 'ssgp_register_admin_menus' );

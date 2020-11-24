@@ -1,6 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) )
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
 
 if ( ! current_user_can( 'manage_options' ) ) {
 	return;
@@ -16,9 +17,9 @@ settings_errors( 'ssgp_messages' );
 	<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 	<form action="options.php" method="post">
 		<?php
-			settings_fields( 'ssgp' );
-			do_settings_sections( 'ssgp' );
-			submit_button( 'Save Settings' );
+		settings_fields( 'ssgp' );
+		do_settings_sections( 'ssgp' );
+		submit_button( 'Save Settings' );
 		?>
 	</form>
 </div>

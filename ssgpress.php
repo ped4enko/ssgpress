@@ -25,11 +25,10 @@ include_once 'includes/register/register-admin-menus.php';
 include_once 'includes/register/register-settings.php';
 
 
-
-function ssgp_main_page_html(){
+function ssgp_main_page_html() {
 	include 'admin/main.php';
 }
 
-function ssgp_options_page_html(){
-    include 'admin/options.php';
+function ssgp_options_page_html() {
+	include 'admin/options.php';
 }

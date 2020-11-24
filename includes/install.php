@@ -1,6 +1,6 @@
 <?php
 
-function ssgp_init_db(){
+function ssgp_init_db() {
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 	global $wpdb;
@@ -26,6 +26,7 @@ COLLATE {$wpdb->collate}"
 id mediumint(8) unsigned NOT NULL auto_increment ,
 run mediumint(9) unsigned NOT NULL,
 message varchar(1024) NULL,
+timestamp DATETIME NOT NULL,
 PRIMARY KEY  (id)
 )
 COLLATE {$wpdb->collate}"
@@ -36,4 +37,4 @@ COLLATE {$wpdb->collate}"
 	}
 }
 
-register_activation_hook( WP_PLUGIN_DIR.'/ssgpress/ssgpress.php', 'ssgp_init_db' );
+register_activation_hook( WP_PLUGIN_DIR . '/ssgpress/ssgpress.php', 'ssgp_init_db' );
