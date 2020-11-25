@@ -17,18 +17,26 @@
  * License URI:       https://www.gnu.org/licenses/agpl-3.0.txt
  */
 
+require_once 'includes/Admin.php';
+require_once 'includes/Crawler.php';
+require_once 'includes/Settings.php';
+
+// TODO Move this to classes
 include_once 'includes/install.php';
 include_once 'includes/uninstall.php';
 include_once 'includes/crawler/crawler-frontend.php';
-include_once 'includes/crawler/crawler-backend.php';
-include_once 'includes/register/register-admin-menus.php';
-include_once 'includes/register/register-settings.php';
 
+class Ssgpress {
+	var $crawler;
+	var $admin;
+	var $settings;
 
-function ssgp_main_page_html() {
-	include 'admin/main.php';
+	function __construct() {
+		$settings = new Ssgpress\Settings();
+		$admin    = new Ssgpress\Admin();
+		$crawler  = new Ssgpress\Crawler();
+
+	}
 }
 
-function ssgp_options_page_html() {
-	include 'admin/options.php';
-}
+new Ssgpress();
