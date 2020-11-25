@@ -13,7 +13,7 @@ class Settings {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 
-	function register_settings() {
+	function register_settings(): void {
 		register_setting( 'ssgp', 'ssgp_options' );
 
 		add_settings_section( 'ssgp_settings_crawler',
@@ -56,7 +56,7 @@ class Settings {
 		);
 	}
 
-	function domain_callback( $args ) {
+	function domain_callback( $args ): void {
 		$options = get_option( 'ssgp_options' ); // TODO Move this to class instance attribute
 		?>
         <input type="url"
@@ -74,7 +74,7 @@ class Settings {
 		<?php
 	}
 
-	function comments_callback( $args ) {
+	function comments_callback( $args ): void {
 		$options = get_option( 'ssgp_options' );
 		?>
         <select name="ssgp_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
@@ -99,7 +99,7 @@ class Settings {
 		<?php
 	}
 
-	function comments_code_callback( $args ) {
+	function comments_code_callback( $args ): void {
 		$options = get_option( 'ssgp_options' );
 		?>
         <textarea name="ssgp_options[<?php echo esc_attr( $args['label_for'] ); ?>]"

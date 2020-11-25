@@ -1,7 +1,10 @@
 <?php
 
-
 namespace Ssgpress;
+
+use Ssgpress\Crawler\FindPosts;
+
+require_once 'Crawler/FindPosts.php';
 
 class Crawler {
 
@@ -13,32 +16,28 @@ class Crawler {
 
 	}
 
-	function gen_queue($run) : int {
+	function gen_queue( $run ): void {
 		global $wpdb;
 
 		$this->ssgpress->logging->log( $run, "Generating list of URLs to scrape" );
 
-		$posts = get_posts( array( 'numberposts' => - 1 ) );
+		$urls = FindPosts::find();
 
-		$query        = "INSERT INTO {$wpdb->prefix}ssgp_queue (`run`, `url`) VALUES ";
-		$values       = array();
-		$placeholders = array();
+		$sql_data         = array();
+		$sql_placeholders = array();
 
-		array_push( $values, $run, get_site_url() );
-		$placeholders[] = "(%d, %s)";
-
-		foreach ( $posts as $post ) {
-			array_push( $values, $run, get_permalink( $post ) );
-			$placeholders[] = "(%d, %s)";
+		foreach ( $urls as $url ) {    // TODO Map?
+			$sql_data[]         = $run;
+			$sql_data[]         = $url;
+			$sql_placeholders[] = '(%d, %s)';
 		}
 
-		$query .= implode( ', ', $placeholders );
-		$wpdb->query( $wpdb->prepare( $query, $values ) );
-
-		return $run;
+		$sql = "INSERT INTO {$wpdb->prefix}ssgp_queue (`run`, `url`) VALUES\n";
+		$sql .= implode( ",\n", $sql_placeholders );
+		$wpdb->query( $wpdb->prepare( $sql, $sql_data ) );
 	}
 
-	function cron_queue( $run ) {
+	function cron_queue( $run ): void {
 		global $wpdb;
 
 		$args = array(
@@ -47,37 +46,40 @@ class Crawler {
 			'user-agent' => 'ssgp/0.0.1'
 		);
 
-		$queue = $wpdb->get_results( "SELECT `url` FROM {$wpdb->prefix}ssgp_queue WHERE `run` = {$run}" );
-
 		$this->ssgpress->logging->log( $run, "Starting crawler" );
 
+		$queue = $wpdb->get_results( "SELECT `url` FROM {$wpdb->prefix}ssgp_queue WHERE `run` = {$run}" );
+
 		$i = 0;
-		$j = count($queue);
+		$j = count( $queue );
 
 		foreach ( $queue as $item ) {
-			$post     = $item->url;
-			$response = wp_remote_get( get_permalink( $post ), $args );
+			$response = wp_remote_get( $item->url, $args );
 
 			if ( is_array( $response ) && ! is_wp_error( $response ) ) {
-				$filename = get_temp_dir() . "/ssgpress/run_" . $run . "/" . parse_url( get_permalink( $post ) )[ path ] . "/index.html";
-				$dirname  = dirname( $filename );
+
+				$filename = get_temp_dir() . "ssgpress/run_" . $run . "/" . parse_url( $item->url )['path'] . "index.html";
+
+				$dirname = dirname( $filename );
+
 				if ( ! is_dir( $dirname ) ) {
 					mkdir( $dirname, 0755, true );
 				}
 				$fp = fopen( $filename, "w" );
-				fwrite( $fp, $response["body"] );
+				fwrite( $fp, $response['body'] );
 				fclose( $fp );
+
 			} else {
-				echo $response->get_error_message();
+				$this->ssgpress->logging->log( $run, "Error archiving {$item->url}: {$response->get_error_message()}" );
 			}
 
-			$i++;
+			$i ++;
 
-			if($i%10===0){
-				$this->ssgpress->logging->log($run, "Crawled {$i} of {$j} pages");
+			if ( $i % 10 === 0 ) {
+				$this->ssgpress->logging->log( $run, "Crawled {$i} of {$j} pages" );
 			}
 		}
 
-		$this->ssgpress->logging->log($run, "Finished crawling");
+		$this->ssgpress->logging->log( $run, "Finished crawling" );
 	}
 }

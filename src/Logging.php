@@ -11,13 +11,13 @@ class Logging {
 		$this->ssgpress = $parent;
 	}
 
-	function log( $run, $message ) {
+	function log( $run, $message ): void {
 		global $wpdb;
-		$logging_query = "INSERT INTO {$wpdb->prefix}ssgp_log (`run`, `message`) VALUES (%d, %s)";
-		$wpdb->query( $wpdb->prepare( $logging_query, array( $run, $message ) ) );
+		$logging_query = "INSERT INTO {$wpdb->prefix}ssgp_log (`run`, `message`, `timestamp`) VALUES (%d, %s, %s)";
+		$wpdb->query( $wpdb->prepare( $logging_query, array( $run, $message, current_time( 'mysql' ) ) ) );
 	}
 
-	function get_all( $run = null, $sort_desc = true ) {
+	function get_all( $run = null, $sort_desc = true ): array {
 		global $wpdb;
 
 		$order = $sort_desc === true ? 'DESC' : 'ASC';

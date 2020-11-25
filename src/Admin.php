@@ -13,7 +13,7 @@ class Admin {
 	}
 
 
-	function register_menu() {
+	function register_menu(): void {
 		$ssgp_topmenu_hook = add_menu_page(
 			'SSGpress',
 			'SSGpress',
@@ -43,11 +43,11 @@ class Admin {
 	}
 
 
-	function main_menu() {
+	function main_menu(): void {
 		include WP_PLUGIN_DIR . '/ssgpress/admin/main.php'; // TODO Why??
 	}
 
-	function options_menu() {
+	function options_menu(): void {
 		include WP_PLUGIN_DIR . '/ssgpress/admin/options.php';
 	}
 

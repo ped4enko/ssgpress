@@ -14,7 +14,7 @@ class Frontend {
 		add_action( 'wp_head', array( $this, 'custom_generator' ) );
 	}
 
-	function fix_crawl_links() {
+	function fix_crawl_links(): void {
 		$options = get_option( 'ssgp_options' );
 		if ( $_SERVER['HTTP_USER_AGENT'] === 'ssgp/0.0.1' ) {
 			define( 'WP_HOME', $options['ssgp_base_url'] );
@@ -23,7 +23,7 @@ class Frontend {
 	}
 
 
-	function custom_generator() {
+	function custom_generator(): void {
 		echo '<meta name="generator" content="SSGpress" />' . "\n";
 	}
 

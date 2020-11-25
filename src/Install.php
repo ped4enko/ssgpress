@@ -15,7 +15,7 @@ class Install {
 		register_uninstall_hook( WP_PLUGIN_DIR . '/ssgpress/ssgpress.php', array( $this, 'drop_db' ) );
 	}
 
-	function init_db() {
+	function init_db(): void {
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 		global $wpdb;
@@ -52,11 +52,11 @@ COLLATE {$wpdb->collate}"
 		}
 	}
 
-	function drop_options() {
+	function drop_options(): void {
 		delete_option( 'ssgp_options' );
 	}
 
-	function drop_db() {
+	function drop_db(): void {
 		global $wpdb;
 
 		$sql = "DROP TABLE IF EXISTS {$wpdb->prefix}ssgp_queue";

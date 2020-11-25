@@ -14,14 +14,14 @@ class Ajax {
 		add_action( 'wp_ajax_ssgp_refresh_logs', array( $this, 'logs' ) );
 	}
 
-	function build() {
+	function build(): void {
 		check_ajax_referer( 'ssgp_build', 'nonce' );
 		$this->ssgpress->build();
 
 		wp_die();
 	}
 
-	function logs() {
+	function logs(): void {
 		check_ajax_referer( 'ssgp_refresh_logs', 'nonce' );
 		$logs = $this->ssgpress->logging->get_all();
 		foreach ( $logs as $line ) {
