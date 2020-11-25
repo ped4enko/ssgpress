@@ -22,7 +22,7 @@ class Logging {
 
 		$order = $sort_desc === true ? 'DESC' : 'ASC';
 
-		if ( ! $run ) {
+		if ( $run === null ) {
 			return $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ssgp_log ORDER BY timestamp {$order}" );
 		}
 

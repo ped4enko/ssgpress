@@ -16,8 +16,8 @@ class Ajax {
 
 	function build() {
 		check_ajax_referer( 'ssgp_build', 'nonce' );
+		$this->ssgpress->build();
 
-		$this->ssgpress->crawler->build();
 		wp_die();
 	}
 

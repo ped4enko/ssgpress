@@ -49,6 +49,27 @@ class Ssgpress {
 		$this->frontend = new Ssgpress\Frontend( $this );
 		$this->logging  = new Ssgpress\Logging( $this );
 	}
+
+	function build() {
+		$run = $this->get_next_run_id();
+
+		$this->logging->log( $run, "Generating list of URLs to scrape" );
+		$run = $this->crawler->gen_queue($run);
+
+		$this->logging->log( $run, "Scheduling one-time crawl via wp-cron" );
+		wp_schedule_single_event( time(), 'ssgp_crawl_cron_hook', array( $run ) );
+	}
+
+	function get_next_run_id() : int{
+		global $wpdb;
+
+		// TODO async
+		// TODO different file
+		// TODO cache
+		// TODO DB queue
+
+		return $wpdb->get_var( "SELECT COALESCE(MAX(run), 0) as `last_run` FROM {$wpdb->prefix}ssgp_log" ) + 1;
+	}
 }
 
 new Ssgpress();

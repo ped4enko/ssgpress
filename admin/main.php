@@ -25,6 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <script>
         jQuery(document).ready(function ($) {
             $('#ssgp_build_form').on('submit', function (e) {
+                $('#build').prop('disabled', true);
                 e.preventDefault();
                 var request = {
                     'action': 'ssgp_build',
@@ -36,9 +37,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                     statusCode: {
                         200: function (response) {
                             jQuery('#title').append('<div class="notice notice-success"><p>Build started</p></div>');
+                            console.log(response);
                         },
                         500: function (response) {
-                            jQuery('#title').append('<div class="notice notice-error"><p>An error occured: \'' + response.body + '\'</p></div>');
+                            jQuery('#title').append('<div class="notice notice-error"><p>An error occurred: \'' + response.body + '\'</p></div>');
                         },
                     }
                 })
@@ -59,7 +61,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             $('#refresh_logs').prop('disabled', false);
                         },
                         500: function (response) {
-                            jQuery('#title').append('<div class="notice notice-error"><p>An error occured: \'' + response.body + '\'</p></div>');
+                            jQuery('#title').append('<div class="notice notice-error"><p>An error occurred: \'' + response.body + '\'</p></div>');
                         },
                     }
                 })

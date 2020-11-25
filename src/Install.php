@@ -41,7 +41,7 @@ COLLATE {$wpdb->collate}"
 id mediumint(8) unsigned NOT NULL auto_increment ,
 run mediumint(9) unsigned NOT NULL,
 message varchar(1024) NULL,
-timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+timestamp DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY  (id)
 )
 COLLATE {$wpdb->collate}"

@@ -9,23 +9,12 @@ class Crawler {
 
 	function __construct( &$parent ) {
 		$this->ssgpress = $parent;
-		add_action( 'ssgp_crawl_cron_hook', array( $this, 'cron_queue' ) );
+		add_action( 'ssgp_crawl_cron_hook', array( $this, 'cron_queue' ), 1 );
 
 	}
 
-	function build() {
-		$this->gen_queue();
-	}
-
-	function gen_queue() {
+	function gen_queue($run) : int {
 		global $wpdb;
-
-		// TODO async
-		// TODO different file
-		// TODO cache
-		// TODO DB queue
-
-		$run = $wpdb->get_var( "SELECT COALESCE(MAX(run), 0) as `last_run` FROM {$wpdb->prefix}ssgp_log" ) + 1;
 
 		$this->ssgpress->logging->log( $run, "Generating list of URLs to scrape" );
 
@@ -46,7 +35,7 @@ class Crawler {
 		$query .= implode( ', ', $placeholders );
 		$wpdb->query( $wpdb->prepare( $query, $values ) );
 
-		wp_schedule_single_event( time(), 'ssgp_crawl_cron_hook', array( $run ) );
+		return $run;
 	}
 
 	function cron_queue( $run ) {
@@ -62,12 +51,15 @@ class Crawler {
 
 		$this->ssgpress->logging->log( $run, "Starting crawler" );
 
+		$i = 0;
+		$j = count($queue);
+
 		foreach ( $queue as $item ) {
 			$post     = $item->url;
 			$response = wp_remote_get( get_permalink( $post ), $args );
 
 			if ( is_array( $response ) && ! is_wp_error( $response ) ) {
-				$filename = get_temp_dir() . "ssgpress/run_" . $run . "/" . parse_url( get_permalink( $post ) )[ path ] . "/index.html";
+				$filename = get_temp_dir() . "/ssgpress/run_" . $run . "/" . parse_url( get_permalink( $post ) )[ path ] . "/index.html";
 				$dirname  = dirname( $filename );
 				if ( ! is_dir( $dirname ) ) {
 					mkdir( $dirname, 0755, true );
@@ -78,6 +70,14 @@ class Crawler {
 			} else {
 				echo $response->get_error_message();
 			}
+
+			$i++;
+
+			if($i%10===0){
+				$this->ssgpress->logging->log($run, "Crawled {$i} of {$j} pages");
+			}
 		}
+
+		$this->ssgpress->logging->log($run, "Finished crawling");
 	}
 }
