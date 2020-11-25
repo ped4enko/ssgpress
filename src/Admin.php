@@ -4,9 +4,14 @@
 namespace Ssgpress;
 
 class Admin {
-	function __construct() {
+	var $ssgpress;
+
+	function __construct( &$parent ) {
+		$this->ssgpress = $parent;
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
+
 	}
+
 
 	function register_menu() {
 		$ssgp_topmenu_hook = add_menu_page(
@@ -39,11 +44,11 @@ class Admin {
 
 
 	function main_menu() {
-		include dirname( __FILE__ ) . '/../admin/main.php'; // TODO Why??
+		include WP_PLUGIN_DIR . '/ssgpress/admin/main.php'; // TODO Why??
 	}
 
 	function options_menu() {
-		include dirname( __FILE__ ) . '/../admin/options.php';
+		include WP_PLUGIN_DIR . '/ssgpress/admin/options.php';
 	}
 
 }

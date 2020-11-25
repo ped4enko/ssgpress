@@ -17,25 +17,37 @@
  * License URI:       https://www.gnu.org/licenses/agpl-3.0.txt
  */
 
-require_once 'includes/Admin.php';
-require_once 'includes/Crawler.php';
-require_once 'includes/Settings.php';
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-// TODO Move this to classes
-include_once 'includes/install.php';
-include_once 'includes/uninstall.php';
-include_once 'includes/crawler/crawler-frontend.php';
+require_once 'src/Install.php';
+require_once 'src/Ajax.php';
+require_once 'src/Admin.php';
+require_once 'src/Crawler.php';
+require_once 'src/Frontend.php';
+require_once 'src/Settings.php';
+require_once 'src/Logging.php';
 
 class Ssgpress {
+
+	var $db;     // TODO Implement?
+	var $install;
+	var $ajax;
 	var $crawler;
 	var $admin;
 	var $settings;
+	var $frontend;
+	var $logging;
 
 	function __construct() {
-		$settings = new Ssgpress\Settings();
-		$admin    = new Ssgpress\Admin();
-		$crawler  = new Ssgpress\Crawler();
-
+		$this->install  = new Ssgpress\Install( $this );
+		$this->ajax     = new Ssgpress\Ajax( $this );
+		$this->settings = new Ssgpress\Settings( $this );
+		$this->admin    = new Ssgpress\Admin( $this );
+		$this->crawler  = new Ssgpress\Crawler( $this );
+		$this->frontend = new Ssgpress\Frontend( $this );
+		$this->logging  = new Ssgpress\Logging( $this );
 	}
 }
 

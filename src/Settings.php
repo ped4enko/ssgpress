@@ -5,7 +5,11 @@ namespace Ssgpress;
 
 
 class Settings {
-	function __construct() {
+
+	var $ssgpress;
+
+	function __construct( &$parent ) {
+		$this->ssgpress = $parent;
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 
@@ -21,7 +25,7 @@ class Settings {
 		add_settings_field(
 			'ssgp_base_url',
 			__( 'Base URL', 'ssgp' ),
-			array( $this, 'domain_callback'),
+			array( $this, 'domain_callback' ),
 			'ssgp',
 			'ssgp_settings_crawler',
 			array(
@@ -32,7 +36,7 @@ class Settings {
 		add_settings_field(
 			'ssgp_comments',
 			__( 'Comments', 'ssgp' ),
-			array( $this, 'comments_callback'),
+			array( $this, 'comments_callback' ),
 			'ssgp',
 			'ssgp_settings_crawler',
 			array(
@@ -43,7 +47,7 @@ class Settings {
 		add_settings_field(
 			'ssgp_comments_code',
 			__( 'Custom comment code', 'ssgp' ),
-			array( $this, 'comments_code_callback'),
+			array( $this, 'comments_code_callback' ),
 			'ssgp',
 			'ssgp_settings_crawler',
 			array(
