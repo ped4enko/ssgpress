@@ -4,6 +4,6 @@
 namespace Ssgpress\Deployment;
 
 
-interface DeploymentOption {
+abstract class DeploymentOption {
 
 }

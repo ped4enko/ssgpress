@@ -5,6 +5,6 @@ namespace Ssgpress\Deployment;
 
 require_once 'DeploymentOption.php';
 
-class Zip implements DeploymentOption {
+class Zip extends DeploymentOption {
 
 }
