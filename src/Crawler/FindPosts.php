@@ -13,7 +13,7 @@ class FindPosts implements FindPages {
 		$pages = $wpdb->get_results( "SELECT `id`
 			FROM {$wpdb->posts}
 			WHERE post_status = 'publish'
-			  AND post_type = 'page'" );
+			  AND post_type NOT IN ('revision', 'nav_menu_item')" );
 
 		return array_map( function ( $a ) {
 			return get_page_link( $a->id );

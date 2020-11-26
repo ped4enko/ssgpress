@@ -9,4 +9,7 @@ require_once 'Deployment/Zip.php';
 
 class Deployment {
 
+	public function deploy( $run ) {
+	}
+
 }

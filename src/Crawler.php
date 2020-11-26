@@ -2,9 +2,12 @@
 
 namespace Ssgpress;
 
-use Ssgpress\Crawler\FindPosts;
-
 require_once 'Crawler/FindPosts.php';
+require_once 'Crawler/FindArchivePages.php';
+require_once 'Crawler/FindAttachements.php';
+require_once 'Crawler/FindAuthorPages.php';
+require_once 'Crawler/FindCategoryPages.php';
+require_once 'Crawler/FindStaticFiles.php';
 
 class Crawler {
 
@@ -21,7 +24,7 @@ class Crawler {
 
 		$this->ssgpress->logging->log( $run, "Generating list of URLs to scrape" );
 
-		$urls = FindPosts::find();
+		$urls = Crawler\FindPosts::find();
 
 		$sql_data         = array();
 		$sql_placeholders = array();
@@ -37,7 +40,7 @@ class Crawler {
 		$wpdb->query( $wpdb->prepare( $sql, $sql_data ) );
 	}
 
-	function cron_queue( $run ): void {
+	function crawl_queue( $run ): void {
 		global $wpdb;
 
 		$args = array(

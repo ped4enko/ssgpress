@@ -32,14 +32,11 @@ require_once 'src/Deployment.php';
 
 class Ssgpress {
 
-
 	// TODO async
 	// TODO different file
 	// TODO cache
 	// TODO DB queue
 
-
-	var $db;     // TODO Implement?
 	var $install;
 	var $ajax;
 	var $crawler;
@@ -58,16 +55,29 @@ class Ssgpress {
 		$this->frontend   = new Ssgpress\Frontend( $this );
 		$this->logging    = new Ssgpress\Logging( $this );
 		$this->deployment = new Ssgpress\Deployment( $this );
+
+		add_action( 'ssgp_build_cron_hook', array( $this, 'build_async' ), 1 );
 	}
 
 	function build() {
+		$this->logging->log( 0, "Getting run id" );
 		$run = $this->get_next_run_id();
+
+		$this->logging->log( $run, "Scheduling build via wp-cron" );
+		wp_schedule_single_event( time(), 'ssgp_build_cron_hook', array( $run ) );
+	}
+
+	function build_async($run){
 
 		$this->logging->log( $run, "Generating list of URLs to scrape" );
 		$this->crawler->gen_queue( $run );
 
-		$this->logging->log( $run, "Scheduling one-time crawl via wp-cron" );
-		wp_schedule_single_event( time(), 'ssgp_crawl_cron_hook', array( $run ) );
+		$this->logging->log( $run, "Generating list of URLs to scrape" );
+		$this->crawler->crawl_queue( $run );
+
+		$this->logging->log( $run, "Deploying crawled page" );
+		$this->deployment->deploy( $run );
+
 	}
 
 	function get_next_run_id(): int {
