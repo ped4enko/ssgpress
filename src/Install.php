@@ -15,6 +15,9 @@ class Install {
 		register_uninstall_hook( WP_PLUGIN_DIR . '/ssgpress/ssgpress.php', array( $this, 'drop_db' ) );
 	}
 
+	/**
+	 * Generate necessary tables in the Database
+	 */
 	function init_db(): void {
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
@@ -52,10 +55,16 @@ COLLATE {$wpdb->collate}"
 		}
 	}
 
+	/**
+	 * Delete user-supplied settings options
+	 */
 	function drop_options(): void {
 		delete_option( 'ssgp_options' );
 	}
 
+	/**
+	 * Delete database tables
+	 */
 	function drop_db(): void {
 		global $wpdb;
 

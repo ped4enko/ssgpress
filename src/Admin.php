@@ -6,15 +6,18 @@ namespace Ssgpress;
 class Admin {
 	var $ssgpress;
 
-	function __construct( &$parent ) {
+	function __construct( $parent ) {
 		$this->ssgpress = $parent;
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 
 	}
 
 
+	/**
+	 * Register admin menus in WordPress
+	 */
 	function register_menu(): void {
-		$ssgp_topmenu_hook = add_menu_page(
+		add_menu_page(
 			'SSGpress',
 			'SSGpress',
 			'manage_options',
@@ -23,7 +26,7 @@ class Admin {
 			'dashicons-media-archive'
 		);
 
-		$ssgp_menu_main_hook = add_submenu_page(
+		add_submenu_page(
 			'ssgp',
 			'SSGpress',
 			'Run',
@@ -32,7 +35,7 @@ class Admin {
 			array( $this, 'main_menu' )
 		);
 
-		$ssgp_menu_options_hook = add_submenu_page(
+		add_submenu_page(
 			'ssgp',
 			'SSGpress Settings',
 			'Settings',
@@ -43,10 +46,16 @@ class Admin {
 	}
 
 
+	/**
+	 * Include the main admin menu template
+	 */
 	function main_menu(): void {
 		include WP_PLUGIN_DIR . '/ssgpress/admin/main.php'; // TODO Why??
 	}
 
+	/**
+	 * Include the options admin menu template
+	 */
 	function options_menu(): void {
 		include WP_PLUGIN_DIR . '/ssgpress/admin/options.php';
 	}

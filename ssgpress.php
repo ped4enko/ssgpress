@@ -59,7 +59,10 @@ class Ssgpress {
 		add_action( 'ssgp_build_cron_hook', array( $this, 'build_async' ), 1 );
 	}
 
-	function build() {
+	/**
+	 * Prepare and schedule a new run
+	 */
+	function build(): void {
 		$this->logging->log( 0, "Getting run id" );
 		$run = $this->get_next_run_id();
 
@@ -67,7 +70,22 @@ class Ssgpress {
 		wp_schedule_single_event( time(), 'ssgp_build_cron_hook', array( $run ) );
 	}
 
-	function build_async($run){
+	/**
+	 * Generates a run ID for a new run
+	 * @return int The next free run number
+	 */
+	function get_next_run_id(): int {
+		global $wpdb;
+
+		return $wpdb->get_var( "SELECT COALESCE(MAX(run), 0) as `last_run` FROM {$wpdb->prefix}ssgp_log" ) + 1;
+	}
+
+	/**
+	 * Start a prepared run
+	 *
+	 * @param int $run Number of the run to build
+	 */
+	function build_async( int $run ): void {
 
 		$this->logging->log( $run, "Generating list of URLs to scrape" );
 		$this->crawler->gen_queue( $run );
@@ -78,12 +96,6 @@ class Ssgpress {
 		$this->logging->log( $run, "Deploying crawled page" );
 		$this->deployment->deploy( $run );
 
-	}
-
-	function get_next_run_id(): int {
-		global $wpdb;
-
-		return $wpdb->get_var( "SELECT COALESCE(MAX(run), 0) as `last_run` FROM {$wpdb->prefix}ssgp_log" ) + 1;
 	}
 }
 

@@ -4,7 +4,7 @@ namespace Ssgpress;
 
 require_once 'Crawler/FindPosts.php';
 require_once 'Crawler/FindArchivePages.php';
-require_once 'Crawler/FindAttachements.php';
+require_once 'Crawler/FindAttachments.php';
 require_once 'Crawler/FindAuthorPages.php';
 require_once 'Crawler/FindCategoryPages.php';
 require_once 'Crawler/FindStaticFiles.php';
@@ -13,7 +13,7 @@ class Crawler {
 
 	var $ssgpress;
 
-	function __construct( &$parent ) {
+	function __construct( $parent ) {
 		$this->ssgpress = $parent;
 		add_action( 'ssgp_crawl_cron_hook', array( $this, 'cron_queue' ), 1 );
 

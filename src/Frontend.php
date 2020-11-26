@@ -14,6 +14,9 @@ class Frontend {
 		add_action( 'wp_head', array( $this, 'custom_generator' ) );
 	}
 
+	/**
+	 * Redefine WP_HOME and WP_SITEURL temporarily to the future base URL
+	 */
 	function fix_crawl_links(): void {
 		$options = get_option( 'ssgp_options' );
 		if ( $_SERVER['HTTP_USER_AGENT'] === 'ssgp/0.0.1' ) {
@@ -23,6 +26,9 @@ class Frontend {
 	}
 
 
+	/**
+	 * Add 'SSGpress' to the HTML meta generator tag
+	 */
 	function custom_generator(): void {
 		echo '<meta name="generator" content="SSGpress" />' . "\n";
 	}

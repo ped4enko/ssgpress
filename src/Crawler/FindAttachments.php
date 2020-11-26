@@ -4,6 +4,6 @@
 namespace Ssgpress\Crawler;
 
 
-class FindAttachements {
+class FindAttachments {
 
 }
