@@ -92,21 +92,34 @@ class Settings {
 		?>
         <select name="ssgp_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
                 id="<?php echo esc_attr( $args['label_for'] ); ?>">
-            <option
-                    value="initial" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'initial', false ) ) : ( '' ); ?>>
-				<?php esc_html_e( 'Leave comments as they are (will result in error messages on comment submission)' ); ?>
+            <option value="initial"
+				<?php echo isset( $options[ $args['label_for'] ] )
+					? ( selected( $options[ $args['label_for'] ], 'initial', false ) ) : ( '' ); ?>>
+				<?php esc_html_e(
+					'Leave comments as they are (will result in error messages on comment submission)',
+					'ssgp'
+				); ?>
             </option>
-            <option
-                    value="disable" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'disable', false ) ) : ( '' ); ?>>
-				<?php esc_html_e( 'Disable comments completely' ); ?>
+            <option value="disable" <?php echo isset( $options[ $args['label_for'] ] )
+				? ( selected( $options[ $args['label_for'] ], 'disable', false ) ) : ( '' ); ?>>
+				<?php esc_html_e(
+					'Disable comments completely',
+					'ssgp'
+				); ?>
             </option>
-            <option
-                    value="readonly" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'readonly', false ) ) : ( '' ); ?>>
-				<?php esc_html_e( 'Disable new comments' ); ?>
+            <option value="readonly" <?php echo isset( $options[ $args['label_for'] ] )
+				? ( selected( $options[ $args['label_for'] ], 'readonly', false ) ) : ( '' ); ?>>
+				<?php esc_html_e(
+					'Disable new comments',
+					'ssgp'
+				); ?>
             </option>
-            <option
-                    value="replace" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'replace', false ) ) : ( '' ); ?>>
-				<?php esc_html_e( 'Replace comments with custom code' ); ?>
+            <option value="replace" <?php echo isset( $options[ $args['label_for'] ] )
+				? ( selected( $options[ $args['label_for'] ], 'replace', false ) ) : ( '' ); ?>>
+				<?php esc_html_e(
+					'Replace comments with custom code',
+					'ssgp'
+				); ?>
             </option>
         </select>
 		<?php

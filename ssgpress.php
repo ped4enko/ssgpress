@@ -7,11 +7,11 @@
  *
  * @wordpress-plugin
  * Plugin Name:       SSGpress
- * Plugin URI:
+ * Plugin URI:        https://github.com/merlinscholz/ssgpress
  * Description:       A static site generator for your existing WordPress site
  * Version:           0.0.1
  * Author:            Merlin Scholz
- * Author URI:        https://scholz.ruhr
+ * Author URI:        https://github.com/merlinscholz/
  * Text Domain:       ssgpress
  * License:           AGPL-3.0-or-later
  * License URI:       https://www.gnu.org/licenses/agpl-3.0.txt
@@ -77,7 +77,7 @@ class Ssgpress {
 	function get_next_run_id(): int {
 		global $wpdb;
 
-		return $wpdb->get_var( "SELECT COALESCE(MAX(run), 0) as `last_run` FROM {$wpdb->prefix}ssgp_log" ) + 1;
+		return ( (int) $wpdb->get_var( "SELECT COALESCE(MAX(`run`), 0) FROM {$wpdb->prefix}ssgp_log" ) ) + 1;
 	}
 
 	/**

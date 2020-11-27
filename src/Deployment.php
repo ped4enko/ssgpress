@@ -4,8 +4,8 @@
 namespace Ssgpress;
 
 
-require_once 'Deployment/Netlify.php';
-require_once 'Deployment/Zip.php';
+require_once 'Deployment/DeploymentOption/Netlify.php';
+require_once 'Deployment/DeploymentOption/Zip.php';
 
 class Deployment {
 

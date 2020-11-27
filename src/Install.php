@@ -10,16 +10,16 @@ class Install {
 
 	function __construct( &$parent ) {
 		$this->ssgpress = $parent;
-		register_activation_hook( WP_PLUGIN_DIR . '/ssgpress/ssgpress.php', array( $this, 'init_db' ) );
-		register_uninstall_hook( WP_PLUGIN_DIR . '/ssgpress/ssgpress.php', array( $this, 'drop_options' ) );
-		register_uninstall_hook( WP_PLUGIN_DIR . '/ssgpress/ssgpress.php', array( $this, 'drop_db' ) );
+		register_activation_hook( sprintf( "%s/ssgpress/ssgpress.php", WP_PLUGIN_DIR ), array( $this, 'init_db' ) );
+		register_uninstall_hook( sprintf( "%s/ssgpress/ssgpress.php", WP_PLUGIN_DIR ), array( $this, 'drop_options' ) );
+		register_uninstall_hook( sprintf( "%s/ssgpress/ssgpress.php", WP_PLUGIN_DIR ), array( $this, 'drop_db' ) );
 	}
 
 	/**
 	 * Generate necessary tables in the Database
 	 */
 	function init_db(): void {
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		require_once( sprintf( "%swp-admin/includes/upgrade.php", ABSPATH ) );
 
 		global $wpdb;
 

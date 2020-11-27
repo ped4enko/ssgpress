@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Ssgpress\Crawler;
+namespace Ssgpress\Crawler\UrlSource;
 
 
-interface FindPages {
+abstract class UrlSource {
 	/**
 	 * Return array of URLs of specific page type
 	 * @return array URLs of requested page type
 	 */
-	static function find(): array;
+	abstract static function find(): array;
 }

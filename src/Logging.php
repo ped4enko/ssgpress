@@ -40,6 +40,10 @@ class Logging {
 			return $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ssgp_log ORDER BY timestamp {$order}" );
 		}
 
-		return $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}ssgp_log WHERE `run`={$run} ORDER BY `timestamp` {$order}, `id` {$order} " );
+		return $wpdb->get_results(
+			"SELECT * FROM {$wpdb->prefix}ssgp_log
+WHERE `run`={$run}
+ORDER BY `timestamp` {$order}, `id` {$order} "
+		);
 	}
 }

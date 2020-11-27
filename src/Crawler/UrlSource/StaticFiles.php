@@ -1,10 +1,10 @@
 <?php
 
+namespace Ssgpress\Crawler\UrlSource;
 
-namespace Ssgpress\Crawler;
+require_once 'FindPages.php';
 
-
-class FindStaticFiles implements FindPages {
+class StaticFiles extends UrlSource {
 
 	static function find(): array {
 		// TODO: Implement find() method.

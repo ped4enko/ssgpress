@@ -2,12 +2,12 @@
 
 namespace Ssgpress;
 
-require_once 'Crawler/FindPosts.php';
-require_once 'Crawler/FindArchivePages.php';
-require_once 'Crawler/FindAttachments.php';
-require_once 'Crawler/FindAuthorPages.php';
-require_once 'Crawler/FindCategoryPages.php';
-require_once 'Crawler/FindStaticFiles.php';
+require_once 'Crawler/UrlSource/Posts.php';
+require_once 'Crawler/UrlSource/ArchivePages.php';
+require_once 'Crawler/UrlSource/Attachments.php';
+require_once 'Crawler/UrlSource/AuthorPages.php';
+require_once 'Crawler/UrlSource/CategoryPages.php';
+require_once 'Crawler/UrlSource/StaticFiles.php';
 
 class Crawler {
 
@@ -24,23 +24,24 @@ class Crawler {
 
 		$this->ssgpress->logging->log( $run, "Generating list of URLs to scrape" );
 
-		$urls = Crawler\FindPosts::find();
+		// We only get source URLs instead of also target URLs so that there are no differences in the generated link
+		$urls = Crawler\UrlSource\Posts::find();
 
 		$sql_data         = array();
 		$sql_placeholders = array();
 
-		foreach ( $urls as $url ) {    // TODO Map?
+		foreach ( $urls as $url ) {
 			$sql_data[]         = $run;
 			$sql_data[]         = $url;
 			$sql_placeholders[] = '(%d, %s)';
 		}
 
-		$sql = "INSERT INTO {$wpdb->prefix}ssgp_queue (`run`, `url`) VALUES\n";
+		$sql = sprintf( "INSERT INTO %sssgp_queue (`run`, `url`) VALUES\n", $wpdb->prefix );
 		$sql .= implode( ",\n", $sql_placeholders );
 		$wpdb->query( $wpdb->prepare( $sql, $sql_data ) );
 	}
 
-	function crawl_queue( $run ): void {
+	function crawl_queue( $run ): void {    // TODO Parallelize?
 		global $wpdb;
 
 		$args = array(
@@ -51,7 +52,9 @@ class Crawler {
 
 		$this->ssgpress->logging->log( $run, "Starting crawler" );
 
-		$queue = $wpdb->get_results( "SELECT `url` FROM {$wpdb->prefix}ssgp_queue WHERE `run` = {$run}" );
+		$queue = $wpdb->get_results(
+			sprintf( "SELECT `url` FROM %sssgp_queue WHERE `run` = %s", $wpdb->prefix, $run )
+		);
 
 		$i = 0;
 		$j = count( $queue );
@@ -61,7 +64,11 @@ class Crawler {
 
 			if ( is_array( $response ) && ! is_wp_error( $response ) ) {
 
-				$filename = get_temp_dir() . "ssgpress/run_" . $run . "/" . parse_url( $item->url )['path'] . "index.html";
+				$filename = sprintf( "%sssgpress/run_%s/%sindex.html",
+					get_temp_dir(),
+					$run,
+					parse_url( $item->url )['path']
+				);
 
 				$dirname = dirname( $filename );
 
@@ -73,13 +80,18 @@ class Crawler {
 				fclose( $fp );
 
 			} else {
-				$this->ssgpress->logging->log( $run, "Error archiving {$item->url}: {$response->get_error_message()}" );
+				$this->ssgpress->logging->log(
+					$run,
+					sprintf( "Error archiving %s: %s", $item->url, $response->get_error_message() )
+				);
 			}
 
 			$i ++;
 
+			// TODO Remove item from queue
+
 			if ( $i % 10 === 0 ) {
-				$this->ssgpress->logging->log( $run, "Crawled {$i} of {$j} pages" );
+				$this->ssgpress->logging->log( $run, sprintf( "Crawled %s of %s pages", $i, $j ) );
 			}
 		}
 

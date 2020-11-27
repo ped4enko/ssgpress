@@ -1,11 +1,10 @@
 <?php
 
-
-namespace Ssgpress\Crawler;
+namespace Ssgpress\Crawler\UrlSource;
 
 require_once 'FindPages.php';
 
-class FindPosts implements FindPages {
+class Posts extends UrlSource {
 
 	static function find(): array {
 		global $wpdb;
