@@ -4,10 +4,12 @@
 namespace Ssgpress;
 
 
+use Ssgpress;
+
 class Logging {
 	var $ssgpress;
 
-	function __construct( &$parent ) {
+	function __construct( ssgpress $parent ) {
 		$this->ssgpress = $parent;
 	}
 

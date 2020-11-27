@@ -2,7 +2,7 @@
 
 namespace Ssgpress\Crawler\UrlSource;
 
-require_once 'FindPages.php';
+require_once 'UrlSource.php';
 
 class AuthorPages extends UrlSource {
 

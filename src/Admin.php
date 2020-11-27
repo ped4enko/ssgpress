@@ -3,10 +3,12 @@
 
 namespace Ssgpress;
 
+use Ssgpress;
+
 class Admin {
 	var $ssgpress;
 
-	function __construct( $parent ) {
+	function __construct( ssgpress $parent ) {
 		$this->ssgpress = $parent;
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 

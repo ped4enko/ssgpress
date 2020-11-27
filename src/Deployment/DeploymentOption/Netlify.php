@@ -6,7 +6,7 @@ namespace Ssgpress\Deployment\DeploymentOption;
 require_once 'DeploymentOption.php';
 require_once 'Zip.php';
 
-use WP_Error;
+use Ssgpress\Deployment;
 
 class Netlify extends DeploymentOption {
 
@@ -16,14 +16,16 @@ class Netlify extends DeploymentOption {
 	var $api_token;
 	var $api_site;
 
-	function __construct( int $run, string $source ) {
-		parent::__construct( $run, $source );
+	function __construct( deployment $parent, int $run, string $source ) {
+		parent::__construct( $parent, $run, $source );
 		$options            = get_option( 'ssgp_options' );
 		$this->api_endpoint = sprintf( "https://api.netlify.com/api/v1/%s/deploys", $this->api_site );
 		$this->api_token    = $options['ssgp_netlify_token'];
 	}
 
-	function deploy(): ?WP_Error {
+	function deploy(): string {
+		$this->deployment->ssgpress->logging->log( $this->run, "Starting Netlify deployment" );
+
 		$target_path = sprintf( "%sssgpress/run_%s.zip",
 			get_temp_dir(),
 			$this->run
@@ -32,12 +34,7 @@ class Netlify extends DeploymentOption {
 		$zip = new Zip( $this->run, $this->source_path );
 		$zip->set_target_path( $target_path );
 
-		$zip_deploy = $zip->deploy();
-		if ( is_wp_error( $zip_deploy ) ) {
-			return $zip_deploy;
-		}
-
-		$zip_path = $zip->get_deployed_location();
+		$zip_path = $zip->deploy();
 
 		$headers = array(
 			'Content-Type'  => 'application/zip',
@@ -54,6 +51,8 @@ class Netlify extends DeploymentOption {
 			'timeout' => 3600,
 			'body'    => $payload
 		);
+
+		wp_remote_post( $this->api_endpoint, $args );
 
 		$this->has_been_run = true;
 		// TODO: Implement deploy() method.

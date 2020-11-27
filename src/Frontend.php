@@ -4,11 +4,13 @@
 namespace Ssgpress;
 
 
+use Ssgpress;
+
 class Frontend {
 
 	var $ssgpress;
 
-	function __construct( &$parent ) {
+	function __construct( ssgpress $parent ) {
 		$this->ssgpress = $parent;
 		add_action( 'init', array( $this, 'fix_crawl_links' ) );
 		add_action( 'wp_head', array( $this, 'custom_generator' ) );
@@ -19,9 +21,9 @@ class Frontend {
 	 */
 	function fix_crawl_links(): void {
 		$options = get_option( 'ssgp_options' );
-		if ( $_SERVER['HTTP_USER_AGENT'] === 'ssgp/0.0.1' ) {
-			define( 'WP_HOME', $options['ssgp_base_url'] );
-			define( 'WP_SITEURL', $options['ssgp_base_url'] );
+		if ( $_SERVER['HTTP_USER_AGENT'] === 'ssgp/0.0.1' ) { // TODO Replace through get param
+			//define( 'WP_HOME', $options['ssgp_base_url'] );
+			//define( 'WP_SITEURL', $options['ssgp_base_url'] );
 		}
 	}
 

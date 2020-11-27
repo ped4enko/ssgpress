@@ -30,6 +30,9 @@ require_once 'src/Settings.php';
 require_once 'src/Logging.php';
 require_once 'src/Deployment.php';
 
+use Ssgpress\Crawler;
+use Ssgpress\Deployment;
+
 class Ssgpress {
 
 	// TODO async
@@ -39,22 +42,18 @@ class Ssgpress {
 
 	var $install;
 	var $ajax;
-	var $crawler;
 	var $admin;
 	var $settings;
 	var $frontend;
 	var $logging;
-	var $deployment;
 
 	function __construct() {
-		$this->install    = new Ssgpress\Install( $this );
-		$this->ajax       = new Ssgpress\Ajax( $this );
-		$this->settings   = new Ssgpress\Settings( $this );
-		$this->admin      = new Ssgpress\Admin( $this );
-		$this->crawler    = new Ssgpress\Crawler( $this );
-		$this->frontend   = new Ssgpress\Frontend( $this );
-		$this->logging    = new Ssgpress\Logging( $this );
-		$this->deployment = new Ssgpress\Deployment( $this );
+		$this->install  = new Ssgpress\Install( $this );
+		$this->ajax     = new Ssgpress\Ajax( $this );
+		$this->settings = new Ssgpress\Settings( $this );
+		$this->admin    = new Ssgpress\Admin( $this );
+		$this->frontend = new Ssgpress\Frontend( $this );
+		$this->logging  = new Ssgpress\Logging( $this );
 
 		add_action( 'ssgp_build_cron_hook', array( $this, 'build_async' ), 1 );
 	}
@@ -87,14 +86,18 @@ class Ssgpress {
 	 */
 	function build_async( int $run ): void {
 
-		$this->logging->log( $run, "Generating list of URLs to scrape" );
-		$this->crawler->gen_queue( $run );
+		$crawler = new Crawler( $this, $run );
 
 		$this->logging->log( $run, "Generating list of URLs to scrape" );
-		$this->crawler->crawl_queue( $run );
+		$crawler->gen_queue();
+
+		$this->logging->log( $run, "Generating list of URLs to scrape" );
+		$temp_files = $crawler->crawl_queue();
+
+		$deployment = new Deployment( $this, $run );
 
 		$this->logging->log( $run, "Deploying crawled page" );
-		$this->deployment->deploy( $run );
+		$deployment->deploy( $temp_files );
 
 	}
 }
