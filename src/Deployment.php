@@ -6,13 +6,15 @@ namespace Ssgpress;
 require_once 'Deployment/DeploymentOption/Netlify.php';
 require_once 'Deployment/DeploymentOption/Vercel.php';
 require_once 'Deployment/DeploymentOption/Zip.php';
+require_once 'Deployment/DeploymentOption/ZipDownload.php';
 
 
+use Exception;
 use Ssgpress;
 use Ssgpress\Deployment\DeploymentOption\Netlify;
 use Ssgpress\Deployment\DeploymentOption\Vercel;
 use Ssgpress\Deployment\DeploymentOption\Zip;
-use WP_Error;
+use Ssgpress\Deployment\DeploymentOption\ZipDownload;
 
 class Deployment {
 
@@ -24,31 +26,33 @@ class Deployment {
 		$this->run      = $run;
 	}
 
-	public function deploy( string $source ): ?WP_Error {
+	public function deploy( string $source ): string {
 		$deployment_method = get_option( 'ssgp_options' )['ssgp_deployment'];
 
 		switch ( $deployment_method ) {
 			case 'netlify':
 				$deployment = new Netlify( $this, $this->run, $source );
-				$deployment->deploy();
 				break;
 			case 'vercel':
 				$deployment = new Vercel( $this, $this->run, $source );
-				$deployment->deploy();
 				break;
-			case 'zip':
+			case 'zip-dir':
 				$deployment = new Zip( $this, $this->run, $source );
-				$deployment->deploy();
+				break;
+			case 'zip-download':
+				$deployment = new ZipDownload( $this, $this->run, $source );
 				break;
 			default:
 				$this->ssgpress->logging->log(
 					$this->run,
 					sprintf( "Deployment failed: Deployment method %s not known", $deployment_method )
 				);
+				throw new Exception(
+					sprintf( "Deployment failed: Deployment method %s not known", $deployment_method )
+				);
 		}
 
-
-		return null;
+		return $deployment->deploy();
 	}
 
 }

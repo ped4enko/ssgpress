@@ -5,10 +5,10 @@ namespace Ssgpress\Deployment\DeploymentOption;
 
 require_once 'DeploymentOption.php';
 
+use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Ssgpress\Deployment;
-use WP_Error;
 use ZipArchive;
 
 class Zip extends DeploymentOption {
@@ -35,10 +35,11 @@ class Zip extends DeploymentOption {
 	 * @param string $path The ZIP target path
 	 */
 	function set_target_path( string $path ) {
-		$this->target_path = realpath( $path );
+		$this->target_path = $path;
 	}
 
 	function deploy(): string {
+
 		$this->deployment->ssgpress->logging->log( $this->run, "Starting Zip deployment" );
 
 		$za = new ZipArchive();
@@ -48,7 +49,10 @@ class Zip extends DeploymentOption {
 		}
 
 		if ( $za->open( $this->target_path, ZipArchive::CREATE | ZipArchive::OVERWRITE ) !== true ) {
-			return new WP_Error();
+			$this->deployment->ssgpress->logging->log($this->run,
+				sprintf("File %s could not be created", $this->target_path)
+			);
+			throw new Exception(sprintf("File %s could not be created", $this->target_path));
 		}
 
 		$files = new RecursiveIteratorIterator(

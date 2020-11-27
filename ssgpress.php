@@ -97,7 +97,11 @@ class Ssgpress {
 		$deployment = new Deployment( $this, $run );
 
 		$this->logging->log( $run, "Deploying crawled page" );
-		$deployment->deploy( $temp_files );
+
+		$this->logging->log( $run, sprintf("Deployed page to %s", $deployment->deploy( $temp_files ) ));
+
+
+
 
 	}
 }

@@ -189,13 +189,21 @@ class Settings {
 					'ssgp'
 				); ?>
             </option>
-            <option value="zip"
-				<?php echo isset( $options[ $args['label_for'] ] )
-					? ( selected( $options[ $args['label_for'] ], 'zip', false ) ) : ( '' ); ?>>
-				<?php esc_html_e(
-					'Zip File',
-					'ssgp'
-				); ?>
+            <option value="zip-dir"
+		        <?php echo isset( $options[ $args['label_for'] ] )
+			        ? ( selected( $options[ $args['label_for'] ], 'zip-dir', false ) ) : ( '' ); ?>>
+		        <?php esc_html_e(
+			        'Zip File to specific location',
+			        'ssgp'
+		        ); ?>
+            </option>
+            <option value="zip-download"
+		        <?php echo isset( $options[ $args['label_for'] ] )
+			        ? ( selected( $options[ $args['label_for'] ], 'zip-download', false ) ) : ( '' ); ?>>
+		        <?php esc_html_e(
+			        'Zip File to be downloaded through browser',
+			        'ssgp'
+		        ); ?>
             </option>
         </select>
 		<?php

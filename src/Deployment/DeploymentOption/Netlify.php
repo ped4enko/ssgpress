@@ -31,7 +31,7 @@ class Netlify extends DeploymentOption {
 			$this->run
 		);
 
-		$zip = new Zip( $this->run, $this->source_path );
+		$zip = new Zip( $this->deployment, $this->run, $this->source_path );
 		$zip->set_target_path( $target_path );
 
 		$zip_path = $zip->deploy();
@@ -54,7 +54,6 @@ class Netlify extends DeploymentOption {
 
 		wp_remote_post( $this->api_endpoint, $args );
 
-		$this->has_been_run = true;
-		// TODO: Implement deploy() method.
+		return "null";
 	}
 }
