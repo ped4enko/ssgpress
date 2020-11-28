@@ -27,7 +27,7 @@ class Deployment {
 	}
 
 	public function deploy( string $source ): string {
-		$deployment_method = get_option( 'ssgp_options' )['ssgp_deployment'];
+		$deployment_method = get_option( 'ssgp_deployment' );
 
 		switch ( $deployment_method ) {
 			case 'netlify':
@@ -43,7 +43,7 @@ class Deployment {
 				$deployment = new ZipDownload( $this, $this->run, $source );
 				break;
 			default:
-				$this->ssgpress->logging->log(
+				Logging::log(
 					$this->run,
 					sprintf( "Deployment failed: Deployment method %s not known", $deployment_method )
 				);

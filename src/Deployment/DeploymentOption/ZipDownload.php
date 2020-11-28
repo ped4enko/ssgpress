@@ -8,6 +8,7 @@ require_once 'Zip.php';
 
 use Exception;
 use Ssgpress\Deployment;
+use Ssgpress\Logging;
 
 class ZipDownload extends DeploymentOption {
 
@@ -16,7 +17,7 @@ class ZipDownload extends DeploymentOption {
 	}
 
 	function deploy(): string {
-		$this->deployment->ssgpress->logging->log( $this->run, "Starting Zip Download deployment" );
+		Logging::log( $this->run, "Starting Zip Download deployment" );
 
 		$target_path = sprintf( "%sssgpress/run_%s.zip",
 			get_temp_dir(),
@@ -28,22 +29,22 @@ class ZipDownload extends DeploymentOption {
 		$zip->set_target_path( $target_path );
 
 		$tmp_path = $zip->deploy();
-		$zip_path = WP_CONTENT_DIR.'/ssgpress/'.basename($tmp_path);
+		$zip_path = WP_CONTENT_DIR . '/ssgpress/' . basename( $tmp_path );
 
 		if ( ! is_dir( dirname( $zip_path ) ) ) {
 			mkdir( dirname( $zip_path ), 0755, true );
 		}
 
-		if(rename($tmp_path, $zip_path)!==true){
-			$this->deployment->ssgpress->logging->log(
+		if ( rename( $tmp_path, $zip_path ) !== true ) {
+			Logging::log(
 				$this->run,
-				sprintf("Could not move Zip file to %s", $zip_path)
+				sprintf( "Could not move Zip file to %s", $zip_path )
 			);
 			throw new Exception(
-				sprintf("Could not move Zip file to %s", $zip_path)
+				sprintf( "Could not move Zip file to %s", $zip_path )
 			);
 		}
 
-		return content_url('ssgpress/'.basename($zip_path));
+		return content_url( 'ssgpress/' . basename( $zip_path ) );
 	}
 }

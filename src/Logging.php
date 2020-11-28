@@ -4,22 +4,14 @@
 namespace Ssgpress;
 
 
-use Ssgpress;
-
 class Logging {
-	var $ssgpress;
-
-	function __construct( ssgpress $parent ) {
-		$this->ssgpress = $parent;
-	}
-
 	/**
 	 * Add new message to log
 	 *
 	 * @param int $run The run to which the message belongs
 	 * @param string $message The message to add to the log
 	 */
-	function log( int $run, string $message ): void {
+	static function log( int $run, string $message ): void {
 		global $wpdb;
 		$logging_query = "INSERT INTO {$wpdb->prefix}ssgp_log (`run`, `message`) VALUES (%d, %s)";
 		$wpdb->query( $wpdb->prepare( $logging_query, array( $run, $message ) ) );
@@ -33,7 +25,7 @@ class Logging {
 	 *
 	 * @return array Sorted array of log objects
 	 */
-	function get_all( int $run = null, bool $sort_desc = true ): array {
+	static function get_all( int $run = null, bool $sort_desc = true ): array {
 		global $wpdb;
 
 		$order = $sort_desc === true ? 'DESC' : 'ASC';

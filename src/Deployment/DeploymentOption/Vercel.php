@@ -6,6 +6,7 @@ namespace Ssgpress\Deployment\DeploymentOption;
 require_once 'DeploymentOption.php';
 
 use Ssgpress\Deployment;
+use Ssgpress\Logging;
 
 class Vercel extends DeploymentOption {
 
@@ -14,7 +15,7 @@ class Vercel extends DeploymentOption {
 	}
 
 	function deploy(): string {
-		$this->deployment->ssgpress->logging->log( $this->run, "Starting Vercel deployment" );
+		Logging::log( $this->run, "Starting Vercel deployment" );
 
 		// TODO: Implement deploy() method.
 	}

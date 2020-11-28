@@ -7,6 +7,7 @@ require_once 'DeploymentOption.php';
 require_once 'Zip.php';
 
 use Ssgpress\Deployment;
+use Ssgpress\Logging;
 
 class Netlify extends DeploymentOption {
 
@@ -18,13 +19,12 @@ class Netlify extends DeploymentOption {
 
 	function __construct( deployment $parent, int $run, string $source ) {
 		parent::__construct( $parent, $run, $source );
-		$options            = get_option( 'ssgp_options' );
 		$this->api_endpoint = sprintf( "https://api.netlify.com/api/v1/%s/deploys", $this->api_site );
-		$this->api_token    = $options['ssgp_netlify_token'];
+		$this->api_token    = get_option( 'ssgp_netlify_token' );
 	}
 
 	function deploy(): string {
-		$this->deployment->ssgpress->logging->log( $this->run, "Starting Netlify deployment" );
+		Logging::log( $this->run, "Starting Netlify deployment" );
 
 		$target_path = sprintf( "%sssgpress/run_%s.zip",
 			get_temp_dir(),

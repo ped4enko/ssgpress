@@ -26,7 +26,7 @@ class Crawler {
 	function gen_queue(): void {
 		global $wpdb;
 
-		$this->ssgpress->logging->log( $this->run, "Generating list of URLs to scrape" );
+		Logging::log( $this->run, "Generating list of URLs to scrape" );
 
 		// We only get source URLs instead of also target URLs so that there are no differences in the generated link
 		$urls = Crawler\UrlSource\Posts::find();
@@ -54,7 +54,7 @@ class Crawler {
 			'user-agent' => 'ssgp/0.0.1'
 		);
 
-		$this->ssgpress->logging->log( $this->run, "Starting crawler" );
+		Logging::log( $this->run, "Starting crawler" );
 
 		$queue = $wpdb->get_results(
 			sprintf( "SELECT `url` FROM %sssgp_queue WHERE `run` = %s", $wpdb->prefix, $this->run )
@@ -91,7 +91,7 @@ class Crawler {
 				fclose( $fp );
 
 			} else {
-				$this->ssgpress->logging->log(
+				Logging::log(
 					$this->run,
 					sprintf( "Error archiving %s: %s", $item->url, $response->get_error_message() )
 				);
@@ -102,11 +102,11 @@ class Crawler {
 			// TODO Remove item from queue
 
 			if ( $i % 10 === 0 ) {
-				$this->ssgpress->logging->log( $this->run, sprintf( "Crawled %s of %s pages", $i, $j ) );
+				Logging::log( $this->run, sprintf( "Crawled %s of %s pages", $i, $j ) );
 			}
 		}
 
-		$this->ssgpress->logging->log( $this->run, "Finished crawling" );
+		Logging::log( $this->run, "Finished crawling" );
 
 		return $root_path;
 	}

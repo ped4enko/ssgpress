@@ -32,20 +32,15 @@ require_once 'src/Deployment.php';
 
 use Ssgpress\Crawler;
 use Ssgpress\Deployment;
+use Ssgpress\Logging;
 
 class Ssgpress {
-
-	// TODO async
-	// TODO different file
-	// TODO cache
-	// TODO DB queue
 
 	var $install;
 	var $ajax;
 	var $admin;
 	var $settings;
 	var $frontend;
-	var $logging;
 
 	function __construct() {
 		$this->install  = new Ssgpress\Install( $this );
@@ -53,7 +48,6 @@ class Ssgpress {
 		$this->settings = new Ssgpress\Settings( $this );
 		$this->admin    = new Ssgpress\Admin( $this );
 		$this->frontend = new Ssgpress\Frontend( $this );
-		$this->logging  = new Ssgpress\Logging( $this );
 
 		add_action( 'ssgp_build_cron_hook', array( $this, 'build_async' ), 1 );
 	}
@@ -62,15 +56,16 @@ class Ssgpress {
 	 * Prepare and schedule a new run
 	 */
 	function build(): void {
-		$this->logging->log( 0, "Getting run id" );
+		Logging::log( 0, "Getting run id" );
 		$run = $this->get_next_run_id();
 
-		$this->logging->log( $run, "Scheduling build via wp-cron" );
+		Logging::log( $run, "Scheduling build via wp-cron" );
 		wp_schedule_single_event( time(), 'ssgp_build_cron_hook', array( $run ) );
 	}
 
 	/**
 	 * Generates a run ID for a new run
+	 *
 	 * @return int The next free run number
 	 */
 	function get_next_run_id(): int {
@@ -88,20 +83,17 @@ class Ssgpress {
 
 		$crawler = new Crawler( $this, $run );
 
-		$this->logging->log( $run, "Generating list of URLs to scrape" );
+		Logging::log( $run, "Generating list of URLs to scrape" );
 		$crawler->gen_queue();
 
-		$this->logging->log( $run, "Generating list of URLs to scrape" );
+		Logging::log( $run, "Generating list of URLs to scrape" );
 		$temp_files = $crawler->crawl_queue();
 
 		$deployment = new Deployment( $this, $run );
 
-		$this->logging->log( $run, "Deploying crawled page" );
+		Logging::log( $run, "Deploying crawled page" );
 
-		$this->logging->log( $run, sprintf("Deployed page to %s", $deployment->deploy( $temp_files ) ));
-
-
-
+		Logging::log( $run, sprintf( "Deployed page to %s", $deployment->deploy( $temp_files ) ) );
 
 	}
 }

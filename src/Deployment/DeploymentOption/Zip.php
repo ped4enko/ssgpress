@@ -9,6 +9,7 @@ use Exception;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Ssgpress\Deployment;
+use Ssgpress\Logging;
 use ZipArchive;
 
 class Zip extends DeploymentOption {
@@ -17,7 +18,7 @@ class Zip extends DeploymentOption {
 
 	function __construct( deployment $parent, int $run, string $source ) {
 		parent::__construct( $parent, $run, $source );
-		$options_target_path = get_option( 'ssgp_options' )['zip_target_path'];
+		$options_target_path = get_option( 'ssgp_zip_target_path' );
 		if ( $options_target_path == null ) {
 			$this->target_path = sprintf( "%sssgpress/run_%s.zip",
 				get_temp_dir(),
@@ -40,7 +41,7 @@ class Zip extends DeploymentOption {
 
 	function deploy(): string {
 
-		$this->deployment->ssgpress->logging->log( $this->run, "Starting Zip deployment" );
+		Logging::log( $this->run, "Starting Zip deployment" );
 
 		$za = new ZipArchive();
 
@@ -49,10 +50,10 @@ class Zip extends DeploymentOption {
 		}
 
 		if ( $za->open( $this->target_path, ZipArchive::CREATE | ZipArchive::OVERWRITE ) !== true ) {
-			$this->deployment->ssgpress->logging->log($this->run,
-				sprintf("File %s could not be created", $this->target_path)
+			Logging::log( $this->run,
+				sprintf( "File %s could not be created", $this->target_path )
 			);
-			throw new Exception(sprintf("File %s could not be created", $this->target_path));
+			throw new Exception( sprintf( "File %s could not be created", $this->target_path ) );
 		}
 
 		$files = new RecursiveIteratorIterator(
@@ -69,7 +70,7 @@ class Zip extends DeploymentOption {
 		}
 
 		$za->close();
-		$this->deployment->ssgpress->logging->log(
+		Logging::log(
 			$this->run,
 			sprintf( "Finished Zip deployment to %s", $this->target_path )
 		);

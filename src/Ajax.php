@@ -31,7 +31,7 @@ class Ajax {
 	 */
 	function logs(): void {
 		check_ajax_referer( 'ssgp_refresh_logs', 'nonce' );
-		$logs = $this->ssgpress->logging->get_all();
+		$logs = Logging::get_all();
 		foreach ( $logs as $line ) {
 			echo sprintf( "Run %s at %s: %s\n", $line->run, $line->timestamp, $line->message );
 		}

@@ -19,7 +19,6 @@ class Settings {
 	 * Register all settings in WordPress
 	 */
 	function register_settings(): void {
-		register_setting( 'ssgp', 'ssgp_options' );
 
 		add_settings_section( 'ssgp_settings_crawler',
 			__( 'Crawler', 'ssgp' ),
@@ -27,6 +26,7 @@ class Settings {
 			'ssgp'
 		);
 
+		register_setting( 'ssgp', 'ssgp_base_url' );
 		add_settings_field(
 			'ssgp_base_url',
 			__( 'Base URL', 'ssgp' ),
@@ -38,37 +38,16 @@ class Settings {
 			)
 		);
 
-		add_settings_field(
-			'ssgp_comments',
-			__( 'Comments', 'ssgp' ),
-			array( $this, 'comments_callback' ),
-			'ssgp',
-			'ssgp_settings_crawler',
-			array(
-				'label_for' => 'ssgp_comments',
-			)
-		);
-
-		add_settings_field(
-			'ssgp_comments_code',
-			__( 'Custom comment code', 'ssgp' ),
-			array( $this, 'comments_code_callback' ),
-			'ssgp',
-			'ssgp_settings_crawler',
-			array(
-				'label_for' => 'ssgp_comments_code',
-			)
-		);
-
 		add_settings_section( 'ssgp_settings_deployment',
 			__( 'Deployment', 'ssgp' ),
-			'',
+			array( $this, "test" ),
 			'ssgp'
 		);
 
+		register_setting( 'ssgp', 'ssgp_deployment' );
 		add_settings_field(
 			'ssgp_deployment',
-			__( 'Base URL', 'ssgp' ),
+			__( 'Deployment Method', 'ssgp' ),
 			array( $this, 'deployment_callback' ),
 			'ssgp',
 			'ssgp_settings_deployment',
@@ -76,6 +55,18 @@ class Settings {
 				'label_for' => 'ssgp_deployment',
 			)
 		);
+
+		add_settings_section( 'ssgp_settings_deployment_netlify',
+			__( 'Deployment on Netlify', 'ssgp' ),
+			'',
+			'ssgp'
+		);
+	}
+
+	function test() {
+		?>
+        asdasd
+		<?php
 	}
 
 	/**
@@ -84,12 +75,12 @@ class Settings {
 	 * @param array $args WordPress-supplied options
 	 */
 	function base_url_callback( array $args ): void {
-		$options = get_option( 'ssgp_options' ); // TODO Move this to class instance attribute
+		$options = get_option( $args['label_for'] ); // TODO Move this to class instance attribute
 		?>
         <input type="url"
                id="<?php echo esc_attr( $args['label_for'] ); ?>"
-               name="ssgp_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
-               value="<?php echo $options[ $args['label_for'] ]; ?>"
+               name="ssgp_base_url"
+               value="<?php echo $options; ?>"
                placeholder="<?php echo get_site_url() ?>">
 
         <p class="description">
@@ -102,108 +93,46 @@ class Settings {
 	}
 
 	/**
-	 * The template for the comment handling option field
-	 *
-	 * @param array $args WordPress-supplied options
-	 */
-	function comments_callback( array $args ): void {
-		$options = get_option( 'ssgp_options' );
-		?>
-        <select name="ssgp_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
-                id="<?php echo esc_attr( $args['label_for'] ); ?>">
-            <option value="initial"
-				<?php echo isset( $options[ $args['label_for'] ] )
-					? ( selected( $options[ $args['label_for'] ], 'initial', false ) ) : ( '' ); ?>>
-				<?php esc_html_e(
-					'Leave comments as they are (will result in error messages on comment submission)',
-					'ssgp'
-				); ?>
-            </option>
-            <option value="disable"
-				<?php echo isset( $options[ $args['label_for'] ] )
-					? ( selected( $options[ $args['label_for'] ], 'disable', false ) ) : ( '' ); ?>>
-				<?php esc_html_e(
-					'Disable comments completely',
-					'ssgp'
-				); ?>
-            </option>
-            <option value="readonly"
-				<?php echo isset( $options[ $args['label_for'] ] )
-					? ( selected( $options[ $args['label_for'] ], 'readonly', false ) ) : ( '' ); ?>>
-				<?php esc_html_e(
-					'Disable new comments',
-					'ssgp'
-				); ?>
-            </option>
-            <option value="replace"
-				<?php echo isset( $options[ $args['label_for'] ] )
-					? ( selected( $options[ $args['label_for'] ], 'replace', false ) ) : ( '' ); ?>>
-				<?php esc_html_e(
-					'Replace comments with custom code',
-					'ssgp'
-				); ?>
-            </option>
-        </select>
-		<?php
-	}
-
-	/**
-	 * The template for the custom comment code option field
-	 *
-	 * @param array $args WordPress-supplied options
-	 */
-	function comments_code_callback( array $args ): void {
-		$options = get_option( 'ssgp_options' );
-		?>
-        <textarea name="ssgp_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
-                  id="<?php echo esc_attr( $args['label_for'] ); ?>"
-                  cols="80" rows="15"
-                  style="font-family: monospace"
-        ><?php echo $options[ $args['label_for'] ]; ?></textarea>
-		<?php
-	}
-
-	/**
 	 * The template for the deployment method option field
 	 *
 	 * @param array $args WordPress-supplied options
 	 */
 	function deployment_callback( array $args ): void {
-		$options = get_option( 'ssgp_options' );
+		$options = get_option( $args['label_for'] );
 		?>
-        <select name="ssgp_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
+        <select name="<?php echo esc_attr( $args['label_for'] ); ?>"
                 id="<?php echo esc_attr( $args['label_for'] ); ?>">
             <option value="netlify"
-				<?php echo isset( $options[ $args['label_for'] ] )
-					? ( selected( $options[ $args['label_for'] ], 'netlify', false ) ) : ( '' ); ?>>
+				<?php echo isset( $options )
+					? ( selected( $options, 'netlify', false ) ) : ( '' ); ?>>
 				<?php esc_html_e(
 					'Netlify',
 					'ssgp'
 				); ?>
             </option>
             <option value="vercel"
-				<?php echo isset( $options[ $args['label_for'] ] )
-					? ( selected( $options[ $args['label_for'] ], 'vercel', false ) ) : ( '' ); ?>>
+				<?php echo isset( $options )
+					? ( selected( $options, 'vercel', false ) ) : ( '' ); ?>>
 				<?php esc_html_e(
 					'Vercel',
 					'ssgp'
 				); ?>
             </option>
             <option value="zip-dir"
-		        <?php echo isset( $options[ $args['label_for'] ] )
-			        ? ( selected( $options[ $args['label_for'] ], 'zip-dir', false ) ) : ( '' ); ?>>
-		        <?php esc_html_e(
-			        'Zip File to specific location',
-			        'ssgp'
-		        ); ?>
+				<?php echo isset( $options )
+					? ( selected( $options, 'zip-dir', false ) ) : ( '' ); ?>>
+				<?php esc_html_e(
+					'Zip File to specific location',
+					'ssgp'
+				); ?>
             </option>
             <option value="zip-download"
-		        <?php echo isset( $options[ $args['label_for'] ] )
-			        ? ( selected( $options[ $args['label_for'] ], 'zip-download', false ) ) : ( '' ); ?>>
-		        <?php esc_html_e(
-			        'Zip File to be downloaded through browser',
-			        'ssgp'
-		        ); ?>
+				<?php echo isset( $options )
+					? ( selected( $options, 'zip-download', false ) ) : ( '' ); ?>>
+				<?php esc_html_e(
+					'Zip File to be downloaded through browser',
+					'ssgp'
+				); ?>
             </option>
         </select>
 		<?php
