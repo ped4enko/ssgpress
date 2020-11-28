@@ -8,8 +8,6 @@ use Ssgpress;
 
 class Ajax {
 
-	var $ssgpress;
-
 	function __construct( ssgpress $parent ) {
 		$this->ssgpress = $parent;
 		add_action( 'wp_ajax_ssgp_build', array( $this, 'build' ) );

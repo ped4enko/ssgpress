@@ -8,10 +8,7 @@ use Ssgpress;
 
 class Settings {
 
-	var $ssgpress;
-
-	function __construct( ssgpress $parent ) {
-		$this->ssgpress = $parent;
+	function __construct( ) {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 

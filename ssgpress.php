@@ -25,7 +25,6 @@ require_once 'src/Install.php';
 require_once 'src/Ajax.php';
 require_once 'src/Admin.php';
 require_once 'src/Crawler.php';
-require_once 'src/Frontend.php';
 require_once 'src/Settings.php';
 require_once 'src/Logging.php';
 require_once 'src/Deployment.php';
@@ -33,6 +32,7 @@ require_once 'src/Deployment.php';
 use Ssgpress\Crawler;
 use Ssgpress\Deployment;
 use Ssgpress\Logging;
+use Ssgpress\PostProcessing;
 
 class Ssgpress {
 
@@ -40,14 +40,12 @@ class Ssgpress {
 	var $ajax;
 	var $admin;
 	var $settings;
-	var $frontend;
 
 	function __construct() {
-		$this->install  = new Ssgpress\Install( $this );
+		$this->install  = new Ssgpress\Install(  );
 		$this->ajax     = new Ssgpress\Ajax( $this );
-		$this->settings = new Ssgpress\Settings( $this );
-		$this->admin    = new Ssgpress\Admin( $this );
-		$this->frontend = new Ssgpress\Frontend( $this );
+		$this->settings = new Ssgpress\Settings( );
+		$this->admin    = new Ssgpress\Admin(  );
 
 		add_action( 'ssgp_build_cron_hook', array( $this, 'build_async' ), 1 );
 	}
@@ -81,19 +79,24 @@ class Ssgpress {
 	 */
 	function build_async( int $run ): void {
 
-		$crawler = new Crawler( $this, $run );
+		Logging::log( $run, "Starting scaper" );
+		$crawler = new Crawler( $run );
 
 		Logging::log( $run, "Generating list of URLs to scrape" );
 		$crawler->gen_queue();
 
-		Logging::log( $run, "Generating list of URLs to scrape" );
+		Logging::log( $run, "Downloading files" );
 		$temp_files = $crawler->crawl_queue();
 
-		$deployment = new Deployment( $this, $run );
+		Logging::log( $run, "Starting post-processing" );
+		$postProcessing = new PostProcessing( $run );
+		$postProcessing->process( $temp_files );
 
 		Logging::log( $run, "Deploying crawled page" );
+		$deployment = new Deployment( $run );
+		$location = $deployment->deploy( $temp_files );
 
-		Logging::log( $run, sprintf( "Deployed page to %s", $deployment->deploy( $temp_files ) ) );
+		Logging::log( $run, sprintf( "Deployed page to %s", $location ) );
 
 	}
 }

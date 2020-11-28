@@ -13,11 +13,9 @@ require_once 'Crawler/UrlSource/StaticFiles.php';
 
 class Crawler {
 
-	var $ssgpress;
 	var $run;
 
-	function __construct( ssgpress $parent, int $run ) {
-		$this->ssgpress = $parent;
+	function __construct( int $run ) {
 		$this->run      = $run;
 		add_action( 'ssgp_crawl_cron_hook', array( $this, 'cron_queue' ), 1 );
 

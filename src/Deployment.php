@@ -18,11 +18,9 @@ use Ssgpress\Deployment\DeploymentOption\ZipDownload;
 
 class Deployment {
 
-	var $ssgpress;
 	var $run;
 
-	function __construct( ssgpress $parent, int $run ) {
-		$this->ssgpress = $parent;
+	function __construct( int $run ) {
 		$this->run      = $run;
 	}
 

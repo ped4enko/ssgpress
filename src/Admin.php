@@ -6,10 +6,8 @@ namespace Ssgpress;
 use Ssgpress;
 
 class Admin {
-	var $ssgpress;
 
-	function __construct( ssgpress $parent ) {
-		$this->ssgpress = $parent;
+	function __construct( ) {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 
 	}
@@ -39,6 +37,15 @@ class Admin {
 
 		add_submenu_page(
 			'ssgp',
+			'SSGpress Prerequisites',
+			'Prerequisites',
+			'manage_options',
+			'ssgp_prerequisites',
+			array( $this, 'prerequisites_menu' )
+		);
+
+		add_submenu_page(
+			'ssgp',
 			'SSGpress Settings',
 			'Settings',
 			'manage_options',
@@ -60,6 +67,13 @@ class Admin {
 	 */
 	function options_menu(): void {
 		include WP_PLUGIN_DIR . '/ssgpress/admin/options.php';
+	}
+
+	/**
+	 * Include the prerequisites admin menu template
+	 */
+	function prerequisites_menu(): void {
+		include WP_PLUGIN_DIR . '/ssgpress/admin/prerequisites.php';
 	}
 
 }
