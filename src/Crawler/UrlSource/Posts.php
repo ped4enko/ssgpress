@@ -19,7 +19,7 @@ class Posts extends UrlSource {
 			$link = get_page_link( $page->id );
 			$queue[] = array(
 				'url'=>$link,
-				'target'=>substr($link, strlen(site_url('index.php')) )
+				'target'=>substr($link, strlen(site_url()) ).DIRECTORY_SEPARATOR.'index.html'
 			);
 		}
 

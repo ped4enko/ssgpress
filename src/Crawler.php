@@ -26,6 +26,8 @@ class Crawler {
 
 		$queue = array_merge(
 			Crawler\UrlSource\Posts::find(),
+			Crawler\UrlSource\AuthorPages::find(),
+			Crawler\UrlSource\CategoryPages::find(),
 			Crawler\UrlSource\StaticFiles::find()
 		);
 
@@ -76,22 +78,23 @@ class Crawler {
 
 			if ( is_array( $response ) && ! is_wp_error( $response ) ) {
 
-				$filename = sprintf(
-					"%s%s%s",
-					$root_path,
-					DIRECTORY_SEPARATOR,
-					$item->target
-				);
+				if(strlen($response["body"])>0) {
+					$filename = sprintf(
+						"%s%s%s",
+						$root_path,
+						DIRECTORY_SEPARATOR,
+						$item->target
+					);
 
-				$dirname = dirname( $filename );
+					$dirname = dirname( $filename );
 
-				if ( ! is_dir( $dirname ) ) {
-					mkdir( $dirname, 0755, true );
+					if ( ! is_dir( $dirname ) ) {
+						mkdir( $dirname, 0755, true );
+					}
+					$fp = fopen( $filename, "w" );
+					fwrite( $fp, $response['body'] );
+					fclose( $fp );
 				}
-				$fp = fopen( $filename, "w" );
-				fwrite( $fp, $response['body'] );
-				fclose( $fp );
-
 			} else {
 				Logging::log(
 					$this->run,

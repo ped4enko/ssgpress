@@ -12,13 +12,17 @@ class StaticFiles extends UrlSource {
 	static function find(): array {
 		$files = [];
 		$files[] = array(
+			'url' => home_url(),
+			'target' => '/index.html'
+		);
+		$files[] = array(
 			'url' => site_url('robots.txt'),
 			'target' => '/robots.txt'
 		);
 
 		while(true){
 			$rand_string = bin2hex(random_bytes(24));
-			if(wp_remote_retrieve_response_code(wp_remote_get(site_url($rand_string)))===404){
+			if(wp_remote_retrieve_response_code(wp_remote_get(site_url('index.php/'.$rand_string)))===404){
 				break;
 			}
 		}
@@ -42,8 +46,23 @@ class StaticFiles extends UrlSource {
 		foreach ( $file_tree as $name => $file ) {
 			if ( ! $file->isDir() ) {
 				$files[] = array(
-					'url'=>site_url(substr($file->getPathname(), strlen(WP_CONTENT_DIR) )),
-					'target'=>substr($file->getPathname(), strlen(WP_CONTENT_DIR) )
+					'url'=>site_url(substr($file->getPathname(), strlen(ABSPATH) )),
+					'target'=>substr($file->getPathname(), strlen(ABSPATH) )
+				);
+			}
+		}
+
+		$file_tree = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator( ABSPATH.DIRECTORY_SEPARATOR.'wp-includes'),
+			RecursiveIteratorIterator::LEAVES_ONLY
+		);
+
+
+		foreach ( $file_tree as $name => $file ) {
+			if ( ! $file->isDir() ) {
+				$files[] = array(
+					'url'=>site_url(substr($file->getPathname(), strlen(ABSPATH) )),
+					'target'=>substr($file->getPathname(), strlen(ABSPATH) )
 				);
 			}
 		}
