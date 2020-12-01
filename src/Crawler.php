@@ -2,8 +2,6 @@
 
 namespace Ssgpress;
 
-use Ssgpress;
-
 require_once 'Crawler/UrlSource/Posts.php';
 require_once 'Crawler/UrlSource/ArchivePages.php';
 require_once 'Crawler/UrlSource/Attachments.php';
@@ -16,7 +14,7 @@ class Crawler {
 	var $run;
 
 	function __construct( int $run ) {
-		$this->run      = $run;
+		$this->run = $run;
 		add_action( 'ssgp_crawl_cron_hook', array( $this, 'cron_queue' ), 1 );
 
 	}
@@ -78,7 +76,7 @@ class Crawler {
 
 			if ( is_array( $response ) && ! is_wp_error( $response ) ) {
 
-				if(strlen($response["body"])>0) {
+				if ( strlen( $response["body"] ) > 0 ) {
 					$filename = sprintf(
 						"%s%s%s",
 						$root_path,

@@ -10,7 +10,6 @@ require_once 'Deployment/DeploymentOption/ZipDownload.php';
 
 
 use Exception;
-use Ssgpress;
 use Ssgpress\Deployment\DeploymentOption\Netlify;
 use Ssgpress\Deployment\DeploymentOption\Vercel;
 use Ssgpress\Deployment\DeploymentOption\Zip;
@@ -21,7 +20,7 @@ class Deployment {
 	var $run;
 
 	function __construct( int $run ) {
-		$this->run      = $run;
+		$this->run = $run;
 	}
 
 	public function deploy( string $source ): string {

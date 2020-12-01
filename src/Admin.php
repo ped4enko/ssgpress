@@ -3,11 +3,9 @@
 
 namespace Ssgpress;
 
-use Ssgpress;
-
 class Admin {
 
-	function __construct( ) {
+	function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 
 	}

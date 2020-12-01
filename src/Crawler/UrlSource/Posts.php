@@ -15,11 +15,11 @@ class Posts extends UrlSource {
 			  AND post_type NOT IN ('revision', 'nav_menu_item')" );
 
 		$queue = [];
-		foreach ($pages as $page){
-			$link = get_page_link( $page->id );
+		foreach ( $pages as $page ) {
+			$link    = get_page_link( $page->id );
 			$queue[] = array(
-				'url'=>$link,
-				'target'=>substr($link, strlen(site_url()) ).DIRECTORY_SEPARATOR.'index.html'
+				'url'    => $link,
+				'target' => substr( $link, strlen( site_url() ) ) . DIRECTORY_SEPARATOR . 'index.html'
 			);
 		}
 

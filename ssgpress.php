@@ -43,13 +43,13 @@ class Ssgpress {
 	var $settings;
 
 	function __construct() {
-		$this->install  = new Ssgpress\Install(  );
+		$this->install  = new Ssgpress\Install();
 		$this->ajax     = new Ssgpress\Ajax( $this );
-		$this->settings = new Ssgpress\Settings( );
-		$this->admin    = new Ssgpress\Admin(  );
+		$this->settings = new Ssgpress\Settings();
+		$this->admin    = new Ssgpress\Admin();
 
 		add_action( 'ssgp_build_cron_hook', array( $this, 'build_async' ), 1 );
-		add_action( 'get_header', array( $this, 'on_crawl'), 1 );
+		add_action( 'get_header', array( $this, 'on_crawl' ), 1 );
 	}
 
 	/**
@@ -96,15 +96,15 @@ class Ssgpress {
 
 		Logging::log( $run, "Deploying crawled page" );
 		$deployment = new Deployment( $run );
-		$location = $deployment->deploy( $temp_files );
+		$location   = $deployment->deploy( $temp_files );
 
 		Logging::log( $run, sprintf( "Deployed page to %s", $location ) );
 
 	}
 
-	function on_crawl(){
-		if($_SERVER['HTTP_USER_AGENT']==='ssgp/0.0.1'){
-			$new_url = rtrim(get_option('ssgp_base_url'), '/');
+	function on_crawl() {
+		if ( $_SERVER['HTTP_USER_AGENT'] === 'ssgp/0.0.1' ) {
+			$new_url = rtrim( get_option( 'ssgp_base_url' ), '/' );
 			define( 'WP_HOME', $new_url );
 			define( 'WP_SITEURL', $new_url );
 

@@ -4,11 +4,9 @@
 namespace Ssgpress;
 
 
-use Ssgpress;
-
 class Settings {
 
-	function __construct( ) {
+	function __construct() {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 	}
 

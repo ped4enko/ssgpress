@@ -4,11 +4,9 @@
 namespace Ssgpress;
 
 
-use Ssgpress;
-
 class Install {
 
-	function __construct( ) {
+	function __construct() {
 		register_activation_hook( sprintf( "%s/ssgpress/ssgpress.php", WP_PLUGIN_DIR ), array( $this, 'init_db' ) );
 		register_uninstall_hook( sprintf( "%s/ssgpress/ssgpress.php", WP_PLUGIN_DIR ), array( $this, 'drop_options' ) );
 		register_uninstall_hook( sprintf( "%s/ssgpress/ssgpress.php", WP_PLUGIN_DIR ), array( $this, 'drop_db' ) );
