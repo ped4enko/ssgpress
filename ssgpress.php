@@ -50,7 +50,7 @@ class Ssgpress {
 
 		add_action( 'ssgp_build_cron_hook', array( $this, 'build_async' ), 1 );
 
-		if ( $_SERVER['HTTP_USER_AGENT'] !== 'ssgp/0.0.1' ) {
+		if ( $_SERVER['HTTP_USER_AGENT'] === 'ssgp/0.0.1' ) {
 			add_action( 'wp', array( $this, 'on_crawl' ), 1 );
 		}
 	}
