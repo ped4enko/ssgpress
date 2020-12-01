@@ -24,21 +24,23 @@ class Crawler {
 	function gen_queue(): void {
 		global $wpdb;
 
-		Logging::log( $this->run, "Generating list of URLs to scrape" );
-
-		// We only get source URLs instead of also target URLs so that there are no differences in the generated link
-		$urls = Crawler\UrlSource\Posts::find();
+		$queue = array_merge(
+			Crawler\UrlSource\Posts::find(),
+			Crawler\UrlSource\StaticFiles::find()
+		);
 
 		$sql_data         = array();
 		$sql_placeholders = array();
 
-		foreach ( $urls as $url ) {
+
+		foreach ( $queue as $map ) {
 			$sql_data[]         = $this->run;
-			$sql_data[]         = $url;
-			$sql_placeholders[] = '(%d, %s)';
+			$sql_data[]         = $map['url'];
+			$sql_data[]         = $map['target'];
+			$sql_placeholders[] = '(%d, %s, %s)';
 		}
 
-		$sql = sprintf( "INSERT INTO %sssgp_queue (`run`, `url`) VALUES\n", $wpdb->prefix );
+		$sql = sprintf( "INSERT INTO %sssgp_queue (`run`, `url`, `target`) VALUES\n", $wpdb->prefix );
 		$sql .= implode( ",\n", $sql_placeholders );
 		$wpdb->query( $wpdb->prepare( $sql, $sql_data ) );
 	}
@@ -55,7 +57,7 @@ class Crawler {
 		Logging::log( $this->run, "Starting crawler" );
 
 		$queue = $wpdb->get_results(
-			sprintf( "SELECT `url` FROM %sssgp_queue WHERE `run` = %s", $wpdb->prefix, $this->run )
+			sprintf( "SELECT `url`, `target` FROM %sssgp_queue WHERE `run` = %s", $wpdb->prefix, $this->run )
 		);
 
 		$i = 0;
@@ -74,9 +76,11 @@ class Crawler {
 
 			if ( is_array( $response ) && ! is_wp_error( $response ) ) {
 
-				$filename = sprintf( "%s/%sindex.html",
+				$filename = sprintf(
+					"%s%s%s",
 					$root_path,
-					parse_url( $item->url )['path']
+					DIRECTORY_SEPARATOR,
+					$item->target
 				);
 
 				$dirname = dirname( $filename );

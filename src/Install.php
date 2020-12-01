@@ -32,6 +32,7 @@ class Install {
 id mediumint(8) unsigned NOT NULL auto_increment ,
 run mediumint(8) unsigned NOT NULL,
 url varchar(1024) NOT NULL,
+target varchar(1024) NOT NULL,
 PRIMARY KEY  (id)
 )
 COLLATE {$wpdb->collate}"

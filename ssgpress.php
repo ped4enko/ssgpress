@@ -28,6 +28,7 @@ require_once 'src/Crawler.php';
 require_once 'src/Settings.php';
 require_once 'src/Logging.php';
 require_once 'src/Deployment.php';
+require_once 'src/PostProcessing.php';
 
 use Ssgpress\Crawler;
 use Ssgpress\Deployment;

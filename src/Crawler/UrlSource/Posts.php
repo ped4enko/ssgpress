@@ -14,8 +14,15 @@ class Posts extends UrlSource {
 			WHERE post_status = 'publish'
 			  AND post_type NOT IN ('revision', 'nav_menu_item')" );
 
-		return array_map( function ( $a ) {
-			return get_page_link( $a->id );
-		}, $pages );
+		$queue = [];
+		foreach ($pages as $page){
+			$link = get_page_link( $page->id );
+			$queue[] = array(
+				'url'=>$link,
+				'target'=>substr($link, strlen(site_url('index.php')) )
+			);
+		}
+
+		return $queue;
 	}
 }
