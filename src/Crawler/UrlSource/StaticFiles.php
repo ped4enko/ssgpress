@@ -10,11 +10,26 @@ require_once 'UrlSource.php';
 class StaticFiles extends UrlSource {
 
 	static function find(): array {
+		global $wp_rewrite;
 		$files   = [];
 		$files[] = array(
 			'url'    => home_url(),
 			'target' => '/index.html'
 		);
+		$pages   = ceil( wp_count_posts()->publish / get_option( 'posts_per_page' ) );
+		for ( $p = 1; $p <= $pages; $p ++ ) {
+			$pagelink = sprintf(
+				"%s/%s/%d",
+				home_url(),
+				$wp_rewrite->pagination_base,
+				$p
+			);
+			$files[]  = array(
+				'url'    => $pagelink,
+				'target' => substr( $pagelink, strlen( site_url() ) ) . DIRECTORY_SEPARATOR . 'index.html'
+			);
+		}
+
 		$files[] = array(
 			'url'    => site_url( 'robots.txt' ),
 			'target' => '/robots.txt'

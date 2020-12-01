@@ -49,7 +49,10 @@ class Ssgpress {
 		$this->admin    = new Ssgpress\Admin();
 
 		add_action( 'ssgp_build_cron_hook', array( $this, 'build_async' ), 1 );
-		add_action( 'get_header', array( $this, 'on_crawl' ), 1 );
+
+		if ( $_SERVER['HTTP_USER_AGENT'] !== 'ssgp/0.0.1' ) {
+			add_action( 'wp', array( $this, 'on_crawl' ), 1 );
+		}
 	}
 
 	/**
@@ -81,7 +84,7 @@ class Ssgpress {
 	 */
 	function build_async( int $run ): void {
 
-		Logging::log( $run, "Starting scaper" );
+		Logging::log( $run, "Starting scraper" );
 		$crawler = new Crawler( $run );
 
 		Logging::log( $run, "Generating list of URLs to scrape" );
@@ -103,12 +106,15 @@ class Ssgpress {
 	}
 
 	function on_crawl() {
-		if ( $_SERVER['HTTP_USER_AGENT'] === 'ssgp/0.0.1' ) {
-			$new_url = rtrim( get_option( 'ssgp_base_url' ), '/' );
-			define( 'WP_HOME', $new_url );
-			define( 'WP_SITEURL', $new_url );
+		$new_url = rtrim( get_option( 'ssgp_base_url' ), '/' );
+		define( 'WP_HOME_OLD', get_home_url( null, '/' ) );
+		define( 'WP_HOME', $new_url );
+		define( 'WP_SITEURL', $new_url );
+		add_filter( 'get_pagenum_link', array( $this, 'filter_pagenum' ), 10, 1 );
+	}
 
-		}
+	function filter_pagenum( $original ) {
+		return WP_HOME . substr( $original, strlen( WP_HOME_OLD ) );
 	}
 }
 

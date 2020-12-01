@@ -7,9 +7,17 @@ class Admin {
 
 	function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
+		add_action( 'admin_bar_menu', array( $this, 'register_admin_bar' ), 100 );
 
 	}
 
+	function register_admin_bar( $admin_bar ) {
+		$admin_bar->add_menu( array(
+			'id'    => 'ssgp_deploy',
+			'title' => __( 'Deploy with SSGpress', 'ssgp' ),
+			'href'  => '#'
+		) );
+	}
 
 	/**
 	 * Register admin menus in WordPress

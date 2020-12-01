@@ -16,7 +16,7 @@ class Posts extends UrlSource {
 
 		$queue = [];
 		foreach ( $pages as $page ) {
-			$link    = get_page_link( $page->id );
+			$link    = get_permalink( $page->id );
 			$queue[] = array(
 				'url'    => $link,
 				'target' => substr( $link, strlen( site_url() ) ) . DIRECTORY_SEPARATOR . 'index.html'
